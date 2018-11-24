@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angularJS测试</title>
+    <script src="js/angular.min.js"></script>
+    <script>
+
+        //定义一个模块
+        //参数1：模块的名称
+        //参数2：要加载的其它模块，如果没有则必须为空数组，如果不写任何东西则表示获取到已注册的模块的意思
+        var app = angular.module("app",[]);
+
+        //定义处理器
+        //参数1：处理器名称
+        //参数2：处理器中的方法体，里面可以制定很多不同的方法，$scope是一个上下文，可以获取到双向绑定的任何内容
+        app.controller("myController",function ($scope) {
+
+            //定义处理器方法
+            $scope.add = function () {
+                return parseInt($scope.x) + parseInt($scope.y);
+            };
+        });
+    </script>
+</head>
+<body ng-app="app" ng-controller="myController">
+x: <input ng-model="x"><br>
+y: <input ng-model="y"><br>
+
+x + y = {{add()}}
+</body>
+</html>
