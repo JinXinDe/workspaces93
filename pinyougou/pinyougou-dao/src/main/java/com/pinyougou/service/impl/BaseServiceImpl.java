@@ -43,7 +43,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
         //创建分页信息对象
         PageInfo<T> pageInfo = new PageInfo<>(list);
 
-        return new PageResult(pageInfo.getList(),pageInfo.getTotal());
+        return new PageResult(pageInfo.getTotal(),pageInfo.getList());
     }
 
     @Override
@@ -58,7 +58,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
         //创建分页信息对象
         PageInfo<T> pageInfo = new PageInfo<>(list);
 
-        return new PageResult(pageInfo.getList(),pageInfo.getTotal());
+        return new PageResult(pageInfo.getTotal(),pageInfo.getList());
     }
 
     @Override

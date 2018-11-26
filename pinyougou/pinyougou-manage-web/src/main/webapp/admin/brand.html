@@ -1,96 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>品牌管理</title>
-    <meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
-    <link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="../css/style.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>品牌管理</title>
+	<meta content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="../plugins/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../plugins/adminLTE/css/AdminLTE.css">
+	<link rel="stylesheet" href="../plugins/adminLTE/css/skins/_all-skins.min.css">
+	<link rel="stylesheet" href="../css/style.css">
 	<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
 	<script src="../plugins/bootstrap/js/bootstrap.min.js"></script>
 	<script src="../plugins/angularjs/angular.min.js"></script>
 	<link rel="stylesheet" href="../plugins/angularjs/pagination.css">
 	<script src="../plugins/angularjs/pagination.js"></script>
-	<script type="text/javascript">
-        //定义模块
-        var app = angular.module("pinyougou",["pagination"]);
-
-        //定义品牌的处理器
-        app.controller("brandController", function ($scope, $http) {
-
-            //查询品牌列表
-            $scope.findAll = function () {
-                $http.get("../brand/findAll.do").success(function (response) {
-                    $scope.list = response;
-
-                });
-
-            };
-
-            //初始化分页导航条的参数
-            $scope.paginationConf = {
-                //页号
-                currentPage: 1,
-                //页大小
-                itemsPerPage: 10,
-                //总记录
-                totalItems: 0,
-                //页大小选择
-                perPageOptions: [10, 20, 30, 40, 50],
-                //如果页号发生改变的事件
-                onChange:function(){
-                    $scope.reloadList();
-                }
-            };
-
-            $scope.reloadList = function () {
-                $scope.findPage($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
-
-            };
-
-            //根据分页信息查询数据
-            $scope.findPage = function (page, rows) {
-                $http.get("../brand/findPage.do?page=" + page + "&rows=" + rows).success(function (response) {
-                    //response是一个分页结果对象pageResult
-                    $scope.paginationConf.totalItems = response.total;
-
-                    //更新记录列表
-                    $scope.list = response.rows;
-
-                }).error(function () {
-                    alert("加载数据失败！");
-                });
-
-            };
-            
-            $scope.save = function () {
-                var method = "add";
-
-                if ($scope.entity.id != null) {
-                    method = "update";
-				}
-
-				$http.post("../brand/add.do", $scope.entity).success(function (response) {
-					if (response.success) {
-					    $scope.reloadList();
-					} else {
-					    alert(response.message);
-					}
-                });
-            };
-            
-            $scope.findOne = function (id) {
-				$scope.get("../brand/findOne.do?id=" + id).success(function (response) {
-					$scope.entity = response;
-                })
-            }
-
-        });
-	</script>
-
+	<script src="../js/base_pagination.js"></script>
+	<script src="../js/service/brandService.js"></script>
+	<script src="../js/controller/baseController.js"></script>
+	<script src="../js/controller/brandController.js"></script>
 
 </head>
 <body ng-app="pinyougou" ng-controller="brandController" ng-init="" class="hold-transition skin-red sidebar-mini">
@@ -109,14 +36,16 @@
                                 <div class="form-group form-inline">
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-default" ng-click="entity={}" title="新建" data-toggle="modal" data-target="#editModal" ><i class="fa fa-file-o"></i> 新建</button>
-                                        <button type="button" class="btn btn-default" title="删除" ><i class="fa fa-trash-o"></i> 删除</button>
+                                        <button type="button" class="btn btn-default"  title="删除" ng-click="delete()" ><i class="fa fa-trash-o"></i> 删除</button>
                                         <button type="button" class="btn btn-default" title="刷新" onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新</button>
                                     </div>
                                 </div>
                             </div>
                             <div class="box-tools pull-right">
                                 <div class="has-feedback">
-							        品牌名称：<input> 品牌首字母：<input>  <button class="btn btn-default">查询</button>
+							        品牌名称：<input ng-model="searchEntity.name">
+                                    品牌首字母：<input ng-model="searchEntity.firstChar">
+                                    <button class="btn btn-default" ng-click="reloadList()">查询</button>
                                 </div>
                             </div>
                             <!--工具栏/-->
@@ -136,7 +65,7 @@
 								</thead>
 								<tbody>
 								<tr ng-repeat="entity in list">
-									<td><input  type="checkbox" ></td>
+									<td><input ng-click="updateSelection($event,entity.id)"  type="checkbox" ></td>
 									<td>{{entity.id}}</td>
 									<td>{{entity.name}}</td>
 									<td>{{entity.firstChar}}</td>
@@ -166,7 +95,6 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 			<h3 id="myModalLabel">品牌编辑</h3>
-			{{entity}}
 		</div>
 		<div class="modal-body">
 			<table class="table table-bordered table-striped"  width="800px">

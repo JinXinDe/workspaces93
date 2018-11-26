@@ -17,6 +17,22 @@ public class BrandController {
     @Reference
     private BrandService brandService;
 
+    @PostMapping("/search")
+    public PageResult search(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer rows, @RequestBody TbBrand brand) {
+        return brandService.search(brand, page,rows);
+    }
+
+    @GetMapping("/delete")
+    public Result delete(Long[] ids){
+        try {
+            brandService.deleteByIds(ids);
+            return Result.ok("删除成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Result.fail("删除失败");
+    }
+
     @PostMapping("/update")
     public Result update(@RequestBody TbBrand brand) {
         try {

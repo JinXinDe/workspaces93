@@ -11,7 +11,7 @@ public class PageResult implements Serializable {
     //总记录数
     private long total;
 
-    public PageResult(List<?> rows, long total) {
+    public PageResult(long total,List<?> rows) {
         this.rows = rows;
         this.total = total;
     }
