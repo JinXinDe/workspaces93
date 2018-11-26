@@ -9,6 +9,7 @@ import com.pinyougou.vo.Specification;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/specification")
 @RestController
@@ -28,6 +29,11 @@ public class SpecificationController {
         return specificationService.findPage(page, rows);
     }
 
+    /**
+     * 新增规格及其规格选项列表
+     * @param specification 规格及其规格选项列表
+     * @return 操作结果
+     */
     @PostMapping("/add")
     public Result add(@RequestBody Specification specification) {
         try {
@@ -39,11 +45,21 @@ public class SpecificationController {
         return Result.fail("增加失败");
     }
 
+    /**
+     * 根据规格id查询规格及其选项列表
+     * @param id 规格id
+     * @return 规格及其选项列表
+     */
     @GetMapping("/findOne")
     public Specification findOne(Long id) {
         return specificationService.findOne(id);
     }
 
+    /**
+     * 更新规格及其规格选项列表
+     * @param specification 规格及其规格选项列表
+     * @return 操作结果
+     */
     @PostMapping("/update")
     public Result update(@RequestBody Specification specification) {
         try {
@@ -55,6 +71,11 @@ public class SpecificationController {
         return Result.fail("修改失败");
     }
 
+    /**
+     * 根据规格id集合删除规格及其每一个规格对应的所有的选项
+     * @param ids 规格id集合
+     * @return 操作结果
+     */
     @GetMapping("/delete")
     public Result delete(Long[] ids) {
         try {
@@ -79,4 +100,12 @@ public class SpecificationController {
         return specificationService.search(page, rows, specification);
     }
 
+    /**
+     * 获取规格列表
+     * @return 规格列表；数据结构如：[{"id":1,"text":"机身内存"},{"id":2,"text":"尺寸"}]
+     */
+    @GetMapping("/selectOptionList")
+    public List<Map> selectOptionList() {
+        return specificationService.selectOptionList();
+    }
 }

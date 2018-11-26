@@ -1,37 +1,36 @@
 package com.pinyougou.manage.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.pinyougou.pojo.TbSpecificationOption;
-import com.pinyougou.sellergoods.service.SepecficationOptionService;
+import com.pinyougou.pojo.TbTypeTemplate;
+import com.pinyougou.sellergoods.service.TypeTemplateService;
 import com.pinyougou.vo.PageResult;
 import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/sepecficationOption")
+@RequestMapping("/typeTemplate")
 @RestController
-public class SepecficationOptionController {
+public class TypeTemplateController {
 
     @Reference
-    private SepecficationOptionService sepecficationOptionService;
+    private TypeTemplateService typeTemplateService;
 
     @RequestMapping("/findAll")
-    public List<TbSpecificationOption> findAll() {
-        return sepecficationOptionService.findAll();
+    public List<TbTypeTemplate> findAll() {
+        return typeTemplateService.findAll();
     }
 
     @GetMapping("/findPage")
     public PageResult findPage(@RequestParam(value = "page", defaultValue = "1")Integer page,
                                @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
-        return sepecficationOptionService.findPage(page, rows);
+        return typeTemplateService.findPage(page, rows);
     }
 
-
     @PostMapping("/add")
-    public Result add(@RequestBody TbSpecificationOption sepecficationOption) {
+    public Result add(@RequestBody TbTypeTemplate typeTemplate) {
         try {
-            sepecficationOptionService.add(sepecficationOption);
+            typeTemplateService.add(typeTemplate);
             return Result.ok("增加成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -40,14 +39,14 @@ public class SepecficationOptionController {
     }
 
     @GetMapping("/findOne")
-    public TbSpecificationOption findOne(Long id) {
-        return sepecficationOptionService.findOne(id);
+    public TbTypeTemplate findOne(Long id) {
+        return typeTemplateService.findOne(id);
     }
 
     @PostMapping("/update")
-    public Result update(@RequestBody TbSpecificationOption sepecficationOption) {
+    public Result update(@RequestBody TbTypeTemplate typeTemplate) {
         try {
-            sepecficationOptionService.update(sepecficationOption);
+            typeTemplateService.update(typeTemplate);
             return Result.ok("修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,7 +57,7 @@ public class SepecficationOptionController {
     @GetMapping("/delete")
     public Result delete(Long[] ids) {
         try {
-            sepecficationOptionService.deleteByIds(ids);
+            typeTemplateService.deleteByIds(ids);
             return Result.ok("删除成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -68,15 +67,15 @@ public class SepecficationOptionController {
 
     /**
      * 分页查询列表
-     * @param sepecficationOption 查询条件
+     * @param typeTemplate 查询条件
      * @param page 页号
      * @param rows 每页大小
      * @return
      */
     @PostMapping("/search")
-    public PageResult search(@RequestBody  TbSpecificationOption sepecficationOption, @RequestParam(value = "page", defaultValue = "1")Integer page,
+    public PageResult search(@RequestBody  TbTypeTemplate typeTemplate, @RequestParam(value = "page", defaultValue = "1")Integer page,
                                @RequestParam(value = "rows", defaultValue = "10")Integer rows) {
-        return sepecficationOptionService.search(page, rows, sepecficationOption);
+        return typeTemplateService.search(page, rows, typeTemplate);
     }
 
 }

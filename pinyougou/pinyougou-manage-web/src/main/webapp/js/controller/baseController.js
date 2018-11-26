@@ -40,4 +40,18 @@ app.controller("baseController", function ($scope) {
 
     };
 
+    $scope.jsonToString = function (jsonArrayStr, key) {
+        var str = "";
+        var jsonArray = JSON.parse(jsonArrayStr);
+        for (var i = 0; i < jsonArray.length; i++) {
+            var jsonObj = jsonArray[i];
+            if (str.length > 0) {
+                str += "," + jsonObj[key];
+            } else {
+                str = jsonObj[key];
+            }
+        }
+        return str;
+    };
+
 });
