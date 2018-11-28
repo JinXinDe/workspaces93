@@ -51,9 +51,12 @@ public class SpecificationServiceImpl extends BaseServiceImpl<TbSpecification> i
         specificationMapper.insertSelective(specification.getSpecification());
 
         //保存规格选项列表
+        //判断规格选项列表不为空
         if (specification.getSpecificationOptionList() != null && specification.getSpecificationOptionList().size() > 0) {
+            //不为空就遍历循环选项列表
             for (TbSpecificationOption specificationOption : specification.getSpecificationOptionList()) {
                 //设置规格id
+                //从规格及其规格选项列表获取规格列表再获取规格id
                 specificationOption.setSpecId(specification.getSpecification().getId());
                 //保存规格选项
                 sepecficationOptionMapper.insertSelective(specificationOption);
@@ -67,17 +70,24 @@ public class SpecificationServiceImpl extends BaseServiceImpl<TbSpecification> i
         Specification specification = new Specification();
 
         //1、规格
+        //查询规格信息
         TbSpecification tbSpecification = specificationMapper.selectByPrimaryKey(id);
+        //将查询出来的规格对象信息保存到规格及其规格列表中
         specification.setSpecification(tbSpecification);
 
         //2、选项列表：根据规格id查询其所有的规格选项列表
         //select * from tb_specification_option where spec_id = ?
+        //创建一个规格列表对象
         TbSpecificationOption param = new TbSpecificationOption();
+        //获取规格列表对象的id
         param.setSpecId(id);
-        List<TbSpecificationOption> specificationOptionList = sepecficationOptionMapper.select(param);
 
+        //根据规格列表对象id查询规格规格列表
+        List<TbSpecificationOption> specificationOptionList = sepecficationOptionMapper.select(param);
+        //将规格列表保存到规格及其规格列表中
         specification.setSpecificationOptionList(specificationOptionList);
 
+        //返回规格及其规格列表
         return specification;
     }
 
@@ -87,14 +97,20 @@ public class SpecificationServiceImpl extends BaseServiceImpl<TbSpecification> i
         update(specification.getSpecification());
 
         //2、删除规格对应的所有规格选项
+        //创建选项列表对象
         TbSpecificationOption param = new TbSpecificationOption();
+        //将选项id传送给选项列表
         param.setSpecId(specification.getSpecification().getId());
+        //通过选项列表id删除选项列表
         sepecficationOptionMapper.delete(param);
 
         //3、保存规格选项列表
+        //判断选项列表不为空
         if (specification.getSpecificationOptionList() != null && specification.getSpecificationOptionList().size() > 0) {
+            //遍历选项列表
             for (TbSpecificationOption specificationOption : specification.getSpecificationOptionList()) {
                 //设置规格id
+                //通过获取选项id将获取到的id传给选项列表
                 specificationOption.setSpecId(specification.getSpecification().getId());
                 //保存规格选项
                 sepecficationOptionMapper.insertSelective(specificationOption);

@@ -1,5 +1,5 @@
 //定义品牌的处理器
-app.controller("brandController", function ($scope, $http, $controller, brandService) {
+app.controller("brandController", function ($scope, $controller, $http, brandService) {
 
     //继承处理器；参数1：要继承的处理器名称，参数2：传递本处理器的信息到父处理器
     $controller("baseController", {$scope:$scope});

@@ -33,6 +33,8 @@ public class SpecificationController {
      * 新增规格及其规格选项列表
      * @param specification 规格及其规格选项列表
      * @return 操作结果
+     *
+     * specification用来封装规格及其规格选项列表
      */
     @PostMapping("/add")
     public Result add(@RequestBody Specification specification) {
