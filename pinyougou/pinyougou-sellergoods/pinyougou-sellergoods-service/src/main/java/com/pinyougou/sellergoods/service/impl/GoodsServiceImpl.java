@@ -1,21 +1,24 @@
 package com.pinyougou.sellergoods.service.impl;
 
 import com.alibaba.dubbo.config.annotation.Service;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.pinyougou.mapper.GoodsDescMapper;
-import com.pinyougou.mapper.GoodsMapper;
-import com.pinyougou.pojo.TbGoods;
-import com.pinyougou.pojo.TbGoodsDesc;
+import com.pinyougou.mapper.*;
+import com.pinyougou.pojo.*;
 import com.pinyougou.sellergoods.service.GoodsService;
 import com.pinyougou.service.impl.BaseServiceImpl;
 import com.pinyougou.vo.Goods;
 import com.pinyougou.vo.PageResult;
+import com.sun.javafx.collections.MappingChange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
+import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.List;
+import java.util.*;
 
 @Service(interfaceClass = GoodsService.class)
 public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsService {
@@ -26,15 +29,48 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
     @Autowired
     private GoodsDescMapper goodsDescMapper;
 
+    @Autowired
+    private ItemMapper itemMapper;
+
+    @Autowired
+    private ItemCatMapper itemCatMapper;
+
+    @Autowired
+    private BrandMapper brandMapper;
+
+    @Autowired
+    private SellerMapper sellerMapper;
+
+    public void deleteGoodsByIds(Long[] ids) {
+        TbGoods goods = new TbGoods();
+        goods.setIsDelete("1");
+
+        Example example = new Example(TbGoods.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("id", Arrays.asList(ids));
+
+        goodsMapper.updateByExampleSelective(goods, example);
+    }
+
     @Override
     public PageResult search(Integer page, Integer rows, TbGoods goods) {
         PageHelper.startPage(page, rows);
 
         Example example = new Example(TbGoods.class);
         Example.Criteria criteria = example.createCriteria();
-        /*if(!StringUtils.isEmpty(goods.get***())){
-            criteria.andLike("***", "%" + goods.get***() + "%");
-        }*/
+
+        //商家
+        if(!StringUtils.isEmpty(goods.getSellerId())){
+            criteria.andEqualTo("sellerId", goods.getSellerId());
+        }
+        //审核状态
+        if(!StringUtils.isEmpty(goods.getAuditStatus())){
+            criteria.andEqualTo("auditStatus", goods.getAuditStatus());
+        }
+        //商品名称
+        if(!StringUtils.isEmpty(goods.getGoodsName())){
+            criteria.andEqualTo("goodsName", "%" + goods.getGoodsName() + "%");
+        }
 
         List<TbGoods> list = goodsMapper.selectByExample(example);
         PageInfo<TbGoods> pageInfo = new PageInfo<>(list);
@@ -44,9 +80,139 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
 
     @Override
     public void addGoods(Goods goods) {
-        goodsMapper.insertSelective(goods.getGoods());
+        //1. 保存商品基本
+        add(goods.getGoods());
 
+        //2. 保存商品描述信息
         goods.getGoodsDesc().setGoodsId(goods.getGoods().getId());
         goodsDescMapper.insertSelective(goods.getGoodsDesc());
+
+        saveItemList(goods);
+    }
+
+    @Override
+    public Goods findGoodsById(Long id) {
+        Goods goods = new Goods();
+        TbGoods tbGoods = goodsMapper.selectByPrimaryKey(id);
+        goods.setGoods(tbGoods);
+
+        TbGoodsDesc goodsDesc = goodsDescMapper.selectByPrimaryKey(id);
+        goods.setGoodsDesc(goodsDesc);
+
+        Example example = new Example(TbItem.class);
+        example.createCriteria().andEqualTo("goodsId",id);
+        List<TbItem> itemList = itemMapper.selectByExample(example);
+        goods.setItemList(itemList);
+
+        return goods;
+    }
+
+    @Override
+    public void updateGoods(Goods goods) {
+        update(goods.getGoods());
+
+        goodsDescMapper.updateByPrimaryKeySelective(goods.getGoodsDesc());
+
+        //3、更新sku
+        //3.1、根据spu id删除sku列表 delete form tb_item where goods_id =?
+        TbItem param = new TbItem();
+        param.setGoodsId(goods.getGoods().getId());
+        itemMapper.delete(param);
+
+        saveItemList(goods);
+    }
+
+    @Override
+    public void updareStatus(Long[] ids, String status) {
+        TbGoods goods = new TbGoods();
+        goods.setAuditStatus(status);
+
+        Example example = new Example(TbGoods.class);
+        example.createCriteria().andIn("id", Arrays.asList(ids));
+        goodsMapper.updateByExampleSelective(goods, example);
+
+        if ("2".equals(status)) {
+            TbItem item = new TbItem();
+            item.setStatus("1");
+
+            Example itemExample = new Example(TbItem.class);
+            itemExample.createCriteria().andIn("goodsId", Arrays.asList(ids));
+            itemMapper.updateByExampleSelective(item, itemExample);
+        }
+    }
+
+    /**
+     * 保存动态sku列表
+     * @param goods 商品信息（基本、描述、sku列表）
+     */
+    private void saveItemList(Goods goods) {
+
+        if ("1".equals(goods.getGoods().getIsEnableSpec())) {
+            //启用规格
+            if (goods.getItemList() != null && goods.getItemList().size() > 0) {
+                for (TbItem item : goods.getItemList()) {
+
+                    //标题=spu名称+所有规格的选项值
+                    String title = goods.getGoods().getGoodsName();
+                    //获取规格；{"网络":"移动3G","机身内存":"16G"}
+                    Map<String,String> map = JSON.parseObject(item.getSpec(), Map.class);
+                    Set<Map.Entry<String, String>> entries = map.entrySet();
+                    for (Map.Entry<String, String> entry : entries) {
+                        title += " " + entry.getValue();
+                    }
+                    item.setTitle(title);
+
+                    setItemValue(item,goods);
+
+                    //保存sku
+                    itemMapper.insertSelective(item);
+                }
+            } else {
+                //未启用规格
+                //1. 创建item对象；大多数据数据来自spu设置到对象中；
+                TbItem tbItem = new TbItem();
+                //2. 如果spu中没有的数据，如：spec（｛｝），num（9999），status(0未启用)，isDefault(1默认)
+                tbItem.setSpec("{}");
+                tbItem.setPrice(goods.getGoods().getPrice());
+                tbItem.setStatus("0");
+                tbItem.setIsDefault("1");
+                tbItem.setNum(9999);
+                tbItem.setTitle(goods.getGoods().getGoodsName());
+
+                //设置商品的其它信息
+                setItemValue(tbItem, goods);
+
+                //3. 保存到数据库中
+                itemMapper.insertSelective(tbItem);
+            }
+        }
+    }
+
+    private void setItemValue(TbItem item, Goods goods) {
+        //商品分类 来自 商品spu的第3级商品分类id
+        item.setCategoryid(goods.getGoods().getCategory3Id());
+        TbItemCat itemCat = itemCatMapper.selectByPrimaryKey(item.getCategoryid());
+        item.setCategory(itemCat.getName());
+
+        //图片；可以从spu中的图片地址列表中获取第1张图片
+        if (!StringUtils.isEmpty(goods.getGoodsDesc().getItemImages())) {
+            List<Map> imageList = JSONArray.parseArray(goods.getGoodsDesc().getItemImages(), Map.class);
+            if (imageList.get(0).get("url") != null) {
+                item.setImage(imageList.get(0).get("url").toString());
+            }
+        }
+        item.setGoodsId(goods.getGoods().getId());
+
+        //品牌
+        TbBrand brand = brandMapper.selectByPrimaryKey(goods.getGoods().getBrandId());
+        item.setBrand(brand.getName());
+
+        item.setCreateTime(new Date());
+        item.setUpdateTime(item.getCreateTime());
+
+        //卖家
+        item.setSellerId(goods.getGoods().getSellerId());
+        TbSeller seller = sellerMapper.selectByPrimaryKey(item.getSellerId());
+        item.setSeller(seller.getName());
     }
 }

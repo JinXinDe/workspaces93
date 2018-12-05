@@ -9,6 +9,7 @@ import com.pinyougou.vo.Result;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RequestMapping("/itemCat")
 @RestController
@@ -16,6 +17,7 @@ public class ItemCatController {
 
     @Reference
     private ItemCatService itemCatService;
+
 
     @RequestMapping("/findAll")
     public List<TbItemCat> findAll() {
@@ -91,4 +93,6 @@ public class ItemCatController {
 
         return itemCatService.findByWhere(itemCat);
     }
+
+
 }

@@ -9,11 +9,13 @@ import com.pinyougou.pojo.TbItemCat;
 import com.pinyougou.sellergoods.service.ItemCatService;
 import com.pinyougou.service.impl.BaseServiceImpl;
 import com.pinyougou.vo.PageResult;
+import com.pinyougou.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
+import java.util.Map;
 
 @Service(interfaceClass = ItemCatService.class)
 public class ItemCatServiceImpl extends BaseServiceImpl<TbItemCat> implements ItemCatService {

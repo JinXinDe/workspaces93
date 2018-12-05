@@ -32,7 +32,7 @@ app.controller("goodsController", function ($scope, $controller, $location, good
         object.success(function (response) {
             if(response.success){
                 alert(response.message);
-                location.href = "goods.html";
+                //location.href = "goods.html";
             } else {
                 alert(response.message);
             }
@@ -164,9 +164,11 @@ app.controller("goodsController", function ($scope, $controller, $location, good
                 //将字符串转换为json对象
                 $scope.typeTemplate.brandIds = JSON.parse($scope.typeTemplate.brandIds);
 
-                //将分类模板对应的扩张属性设置给商品描述的扩展属性
-                //商品描述的扩展属性将对应有值，具体结构形如：[{"text":"内存大小","value":"4G"},{"text":"颜色","value":"黑色"}]
-                $scope.entity.goodsDesc.customAttributeItems = JSON.parse($scope.typeTemplate.customAttributeItems);
+                if ($location.search()["id"] == null) {//编辑的时候；一开始的路径中带有id，但是点击了任何页面中选项卡后则id会被替换
+                    //将分类模板对应的扩张属性设置给商品描述的扩展属性
+                    //商品描述的扩展属性将对应有值，具体结构形如：[{"text":"内存大小","value":"4G"},{"text":"颜色","value":"黑色"}]
+                    $scope.entity.goodsDesc.customAttributeItems = JSON.parse($scope.typeTemplate.customAttributeItems);
+                }
             });
 
             //根据分类模板id查询其对应的规格及其规格的选项
