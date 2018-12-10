@@ -135,4 +135,17 @@ public class GoodsController {
         return Result.fail("更新商品状态失败");
     }
 
+    @GetMapping("/updateMarketable")
+    public Result updateMarketable(Long[] ids, String status) {
+        try {
+            goodsService.updareMarketable(ids,status);
+
+            return Result.ok("更新商品状态成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Result.fail("更新商品状态失败");
+    }
+
 }
