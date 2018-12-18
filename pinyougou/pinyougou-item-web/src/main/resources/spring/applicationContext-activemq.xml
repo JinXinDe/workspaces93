@@ -14,7 +14,7 @@
         <!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
         <property name="targetConnectionFactory" ref="targetConnectionFactory"/>
         <!-- 消费者标识 -->
-        <property name="clientId" value="pinyougou-tiem-web-1"/>
+        <property name="clientId" value="pinyougou-item-web-1"/>
     </bean>
 
     <!--审核通过同步搜索系统的队列-->
@@ -33,9 +33,9 @@
         <!-- 消息持久化 -->
         <property name="subscriptionDurable" value="true"/>
         <!-- 消费者标识 -->
-        <property name="clientId" value="pinyougou-tiem-web-1"/>
+        <property name="clientId" value="pinyougou-item-web-1"/>
         <!-- 订阅者标识(与消费者标识符可以不一样；默认为监听器全限定名) -->
-        <property name="durableSubscriptionName" value="pinyougou-tiem-web-1"/>
+        <property name="durableSubscriptionName" value="pinyougou-item-web-1"/>
         <!-- 设置为发布/订阅模式 -->
         <property name="pubSubDomain" value="true"/>
         <!-- 是否开启事务 -->
@@ -49,7 +49,7 @@
         <!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory -->
         <property name="targetConnectionFactory" ref="targetConnectionFactory"/>
         <!-- 消费者标识 -->
-        <property name="clientId" value="pinyougou-tiem-web-2"/>
+        <property name="clientId" value="pinyougou-item-web-2"/>
     </bean>
 
     <!--审核通过同步搜索系统的队列-->
@@ -68,9 +68,9 @@
         <!-- 消息持久化 -->
         <property name="subscriptionDurable" value="true"/>
         <!-- 消费者标识 -->
-        <property name="clientId" value="pinyougou-tiem-web-2"/>
+        <property name="clientId" value="pinyougou-item-web-2"/>
         <!-- 订阅者标识(与消费者标识符可以不一样；默认为监听器全限定名) -->
-        <property name="durableSubscriptionName" value="pinyougou-tiem-web-2"/>
+        <property name="durableSubscriptionName" value="pinyougou-item-web-2"/>
         <!-- 设置为发布/订阅模式 -->
         <property name="pubSubDomain" value="true"/>
         <!-- 是否开启事务 -->

@@ -36,7 +36,7 @@ public interface GoodsService extends BaseService<TbGoods> {
      * @param ids 商品spu id数组
      * @param status 商品的状态
      */
-    void updareStatus(Long[] ids, String status);
+    void updateStatus(Long[] ids, String status);
 
     /**
      * 更新商品的删除状态为已删除

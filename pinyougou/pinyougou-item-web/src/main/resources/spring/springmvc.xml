@@ -38,7 +38,7 @@
 
     <!--  引用 dubbo  服务  -->
     <!--消费者名称-->
-    <dubbo:application name="pinyougou-search-web"/>
+    <dubbo:application name="pinyougou-item-web"/>
     <!--注册中心地址-->
     <dubbo:registry address="zookeeper://192.168.12.168:2181"/>
     <!--扫描需要使用远程服务对象的注解所在的包-->

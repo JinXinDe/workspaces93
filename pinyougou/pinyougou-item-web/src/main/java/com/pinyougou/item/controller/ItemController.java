@@ -39,13 +39,13 @@ public class ItemController {
         mv.addObject("goods", goods.getGoods());
         //itemCat1  第1级商品分类中文名称
         TbItemCat itemCat1 = itemCatService.findOne(goods.getGoods().getCategory1Id());
-        mv.addObject("itemCat1", itemCat1);
+        mv.addObject("itemCat1", itemCat1.getName());
         //itemCat2  第2级商品分类中文名称
         TbItemCat itemCat2 = itemCatService.findOne(goods.getGoods().getCategory2Id());
-        mv.addObject("itemCat2", itemCat2);
+        mv.addObject("itemCat2", itemCat2.getName());
         //itemCat3  第3级商品分类中文名称
         TbItemCat itemCat3 = itemCatService.findOne(goods.getGoods().getCategory3Id());
-        mv.addObject("itemCat3", itemCat3);
+        mv.addObject("itemCat3", itemCat3.getName());
 
         return mv;
     }

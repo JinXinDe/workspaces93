@@ -1,6 +1,6 @@
 package com.pinyougou.solr;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.pinyougou.mapper.ItemMapper;
 import com.pinyougou.pojo.TbItem;
 import org.junit.Test;
@@ -20,20 +20,22 @@ public class ItemImport2SolrTest {
     @Autowired
     private SolrTemplate solrTemplate;
 
+
     @Autowired
     private ItemMapper itemMapper;
 
     @Test
-    public void test() {
+    public void test(){
         //1、查询已启用的商品sku列表
         TbItem param = new TbItem();
+        //已启用
         param.setStatus("1");
         List<TbItem> itemList = itemMapper.select(param);
 
         //2、转换每一个sku中的spec到specMap
         for (TbItem tbItem : itemList) {
-            Map secMap = JSON.parseObject(tbItem.getSpec(), Map.class);
-            tbItem.setSpecMap(secMap);
+            Map map = JSONObject.parseObject(tbItem.getSpec(), Map.class);
+            tbItem.setSpecMap(map);
         }
 
         //3、保存sku列表

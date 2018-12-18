@@ -34,14 +34,13 @@ public class PageTestController {
     @Reference
     private ItemCatService itemCatService;
 
+@Value("${ITEM_HTML_PATH}")
+    private String ITEM_HTML_PATH;
     /**
      * 遍历每个spu id查询商品信息（6个）再利用Freemarker生成具体的该spu的静态页面到指定路径
      * @param goodsIds spu id数组
      * @return 操作结果
      */
-    @Value("${ITEM_HTML_PATH}")
-    private String ITEM_HTML_PATH;
-
     @GetMapping("/audit")
     public String audit(Long[] goodsIds) {
         if (goodsIds != null && goodsIds.length > 0) {
@@ -53,6 +52,11 @@ public class PageTestController {
         return "success";
     }
 
+/**
+     * 遍历每个spu id到指定路径下删除静态页面
+     * @param goodsIds spu id数组
+     * @return 操作结果
+     */
     @GetMapping("/delete")
     public String delete(Long[] goodsIds) {
         try {

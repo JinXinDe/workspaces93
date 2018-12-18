@@ -125,7 +125,7 @@ public class GoodsController {
     @GetMapping("/updateStatus")
     public Result updateStatus(Long[] ids, String status) {
         try {
-            goodsService.updareStatus(ids,status);
+            goodsService.updateStatus(ids,status);
 
             return Result.ok("更新商品状态成功");
         } catch (Exception e) {

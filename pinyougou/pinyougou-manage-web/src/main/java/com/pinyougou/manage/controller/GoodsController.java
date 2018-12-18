@@ -138,7 +138,7 @@ public class GoodsController {
     @GetMapping("/updateStatus")
     public Result updateStatus(Long[] ids, String status) {
         try {
-            goodsService.updareStatus(ids,status);
+            goodsService.updateStatus(ids,status);
 
             if ("2".equals(status)) {
                 //审核通过更新搜索系统数据

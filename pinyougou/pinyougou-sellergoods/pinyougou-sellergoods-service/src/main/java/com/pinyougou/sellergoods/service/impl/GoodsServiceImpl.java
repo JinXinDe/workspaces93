@@ -119,7 +119,7 @@ public class GoodsServiceImpl extends BaseServiceImpl<TbGoods> implements GoodsS
     }
 
     @Override
-    public void updareStatus(Long[] ids, String status) {
+    public void updateStatus(Long[] ids, String status) {
         //update tb_goods set audit_status=1 where id  in (?,?,?)
 
         TbGoods goods = new TbGoods();
