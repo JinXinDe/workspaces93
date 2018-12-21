@@ -32,7 +32,7 @@ public class CartServiceImpl implements CartService {
             throw new RuntimeException("商品不存在");
         }
         if (!"1".equals(item.getStatus())) {
-            throw new RuntimeException("商品状态不合法");
+            throw new RuntimeException("商品未启用");
         }
         //2. 判断商品对应的商家Cart是否存在在购物车列表
         Cart cart = findCartBySellerId(cartList, item.getSellerId());
@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
                 //3. 商家不存在；则直接先添加一个商家，在该商家的商品列表中加入商品
                 cart = new Cart();
                 cart.setSellerId(item.getSellerId());
-                cart.setSellerName(item.getSeller());
+                cart.setSeller(item.getSeller());
                 List<TbOrderItem> orderItemList = new ArrayList<>();
 
                 TbOrderItem orderItem = createOrderItem(item, num);

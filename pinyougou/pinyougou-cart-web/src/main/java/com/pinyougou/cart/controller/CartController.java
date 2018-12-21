@@ -27,9 +27,9 @@ import java.util.Map;
 public class CartController {
 
     //品优购系统的购物车在cookie中的名称
-    private static final String COOKIE_CART_LTST = "PYG_CART_LIST";
+    private static final String COOKIE_CART_LIST = "PYG_CART_LIST";
     //品优购系统的购物车在cookie中的生存时间为1天
-    private static final int COOKIE_CART_LTST_MAX_AGE = 60*60*24;
+    private static final int COOKIE_CART_MAX_AGE = 60*60*24;
 
     @Autowired
     private HttpServletRequest request;
@@ -70,8 +70,8 @@ public class CartController {
                 //未登录；更新cookie中的数据
 
                 //3. 将购物车列表写回到cookie；最大过期时间1天
-                CookieUtils.setCookie(request, response, COOKIE_CART_LTST,
-                        JSON.toJSONString(newCartList), COOKIE_CART_LTST_MAX_AGE, true);
+                CookieUtils.setCookie(request, response, COOKIE_CART_LIST,
+                        JSON.toJSONString(newCartList), COOKIE_CART_MAX_AGE, true);
             } else {
                 //已登录，更新redis中的数据
                 //3、将购物车存入到redis中
@@ -96,7 +96,7 @@ public class CartController {
             //如果未登录则用户名为：anonymousUser
             String username = SecurityContextHolder.getContext().getAuthentication().getName();
             List<Cart> cookieCartList = new ArrayList<>();
-            String cartListJsonStr = CookieUtils.getCookieValue(request, COOKIE_CART_LTST, true);
+            String cartListJsonStr = CookieUtils.getCookieValue(request, COOKIE_CART_LIST, true);
             if (!StringUtils.isEmpty(cartListJsonStr)) {
                 cookieCartList = JSONArray.parseArray(cartListJsonStr, Cart.class);
             }
@@ -114,8 +114,9 @@ public class CartController {
                     //3. 将新的购物车列表保存到redis中；
                     cartService.saveCartListByUsername(redisCartList, username);
                     //4. 删除cookie中的购物车；
-                    CookieUtils.deleteCookie(request, response, COOKIE_CART_LTST);
+                    CookieUtils.deleteCookie(request, response, COOKIE_CART_LIST);
                 }
+
                 //5. 返回新的购物车列表；
                 return redisCartList;
             }
@@ -131,7 +132,7 @@ public class CartController {
      */
     @GetMapping("/getUsername")
     public Map<String, Object> getUsername() {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<String, Object>();
 
         //因为配置了可以匿名访问所以如果是匿名访问的时候，返回的用户名为anonymousUser
         //如果未登录则用户名为：anonymousUser

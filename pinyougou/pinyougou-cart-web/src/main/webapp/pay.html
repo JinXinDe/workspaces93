@@ -9,10 +9,11 @@
         <link rel="stylesheet" type="text/css" href="css/webbase.css" />
         <link rel="stylesheet" type="text/css" href="css/pages-weixinpay.css" />
         <script src="plugins/angularjs/angular.min.js"></script>
-        <script src="js/base.js"></script>
+		<script src="plugins/qrious.min.js"></script>
+		<script src="js/base.js"></script>
         <script src="js/service/cartService.js"></script>
 		<script src="js/service/payService.js"></script>
-        <script src="js/controller/cartController.js"></script>
+        <script src="js/controller/payController.js"></script>
     </head>
 
 <body ng-app="pinyougou" ng-controller="payController" ng-init="getUsername();createNative()">
@@ -57,8 +58,7 @@
 				</div>				
 				<div class="checkout-steps">
 					<div class="fl weixin">微信支付</div>
-                    <div class="fl sao"> 
-                        <p class="red">
+                    <div class="fl sao">
                         <div class="fl code">
                             <img id="qrious">
                             <div class="saosao">

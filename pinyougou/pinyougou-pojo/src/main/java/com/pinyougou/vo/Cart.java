@@ -9,7 +9,7 @@ public class Cart implements Serializable {
 
     private String sellerId;
 
-    private String sellerName;
+    private String seller;
 
     private List<TbOrderItem> orderItemList;
 
@@ -21,12 +21,12 @@ public class Cart implements Serializable {
         this.sellerId = sellerId;
     }
 
-    public String getSellerName() {
-        return sellerName;
+    public String getSeller() {
+        return seller;
     }
 
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 
     public List<TbOrderItem> getOrderItemList() {

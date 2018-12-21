@@ -10,7 +10,7 @@ app.controller("cartController", function ($scope, cartService) {
     //获取购物车列表数据
     $scope.findCartList = function () {
         cartService.findCartList().success(function (response) {
-            $scope.cartList = response;
+           $scope.cartList = response;
 
             //计算总数量和价格
             $scope.totalValue = cartService.subTotalValue(response);

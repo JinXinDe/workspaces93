@@ -24,10 +24,34 @@ app.controller("payController", function ($scope, $location, cartService, paySer
                     level:"M",
                     value:response.code_url
                 });
+
+                queryPayStatus($scope.outTradeNo);
             } else {
                 alert("生成二维码失败!");
             }
         });
     };
+
+    queryPayStatus = function (outTradeNo) {
+        payService.queryPayStatus(outTradeNo).success(function (response) {
+            if (response.success) {
+                //支付成功跳转到支付成功的页面
+                location.href = "paysuccess.html#?money=" + $scope.money;
+            } else {
+                if ("支付超时"==response.message) {
+                    //alert(response.message);
+                    //重新生成二维码
+                    $scope.createNative();
+                } else {
+                    //支付失败
+                    location.href = "payfail.html";
+                }
+            }
+        });
+    };
+
+    $scope.loadMoney = function () {
+        $scope.money = $location.search()["money"];
+    }
 
 });

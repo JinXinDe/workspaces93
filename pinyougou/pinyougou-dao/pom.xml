@@ -61,4 +61,33 @@
             <artifactId>slf4j-log4j12</artifactId>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <abc>dev</abc>
+            </properties>
+        </profile>
+        <profile>
+            <id>pro</id>
+            <properties>
+                <abc>pro</abc>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <filters>
+            <filter>src/main/resources/filters/db_${abc}.properties</filter>
+        </filters>
+
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
 </project>
